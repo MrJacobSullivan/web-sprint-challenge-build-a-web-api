@@ -46,6 +46,19 @@ router.post('/', validateAction, async (req, res, next) => {
 });
 
 // [PUT] /api/actions/:id
+router.put('/:id', [validateActionId, validateAction], async (req, res, next) => {
+  try {
+    const updatedAction = await Actions.update(req.params.id, {
+      project_id: req.body.project_id,
+      description: req.body.description,
+      notes: req.body.notes,
+      completed: req.body.completed,
+    });
+    res.status(201).json(updatedAction);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // [DELETE] /api/actions/:id
 
