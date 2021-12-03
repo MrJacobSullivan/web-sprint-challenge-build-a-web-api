@@ -1,6 +1,6 @@
 const express = require('express');
 
-// const {} = require('./actions-middlware');
+const { validateActionId } = require('./actions-middlware');
 
 const Actions = require('./actions-model');
 
@@ -18,6 +18,13 @@ router.get('/', async (req, res, next) => {
 });
 
 // [GET] /api/actions/:id
+router.get('/:id', validateActionId, async (req, res, next) => {
+  try {
+    res.json(req.action);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // [POST] /api/actions
 
