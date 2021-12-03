@@ -1,10 +1,13 @@
 const express = require('express');
 
+// middlewares
 const { validator } = require('../global-middleware');
 const { validateProjectId } = require('./projects-middleware');
 
+// validation schemas
 const projectSchema = require('./projects-validation');
 
+// database interface
 const Projects = require('./projects-model');
 
 // BASE - /api/projects
@@ -32,11 +35,7 @@ router.get('/:id', validateProjectId, async (req, res, next) => {
 // [POST] /api/projects
 router.post('/', validator(projectSchema), async (req, res, next) => {
   try {
-    const project = await Projects.insert({
-      name: req.body.name,
-      description: req.body.description,
-      completed: req.body.completed,
-    });
+    const project = await Projects.insert(req.body);
     res.status(201).json(project);
   } catch (err) {
     next(err);
@@ -46,11 +45,7 @@ router.post('/', validator(projectSchema), async (req, res, next) => {
 // [PUT] /api/projects/:id
 router.put('/:id', [validateProjectId, validator(projectSchema)], async (req, res, next) => {
   try {
-    const updatedProject = await Projects.update(req.params.id, {
-      name: req.body.name,
-      description: req.body.description,
-      completed: req.body.completed,
-    });
+    const updatedProject = await Projects.update(req.params.id, req.body);
     res.status(201).json(updatedProject);
   } catch (err) {
     next(err);

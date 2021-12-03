@@ -1,8 +1,10 @@
 const express = require('express');
 
+// routers
 const projectsRouter = require('./projects/projects-router');
 const actionsRouter = require('./actions/actions-router');
 
+// middlewares
 const { logger, errorHandler } = require('./global-middleware');
 
 const server = express();

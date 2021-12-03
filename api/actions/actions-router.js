@@ -1,10 +1,13 @@
 const express = require('express');
 
+// middlewares
 const { validator } = require('../global-middleware');
 const { validateActionId } = require('./actions-middlware');
 
+// validation schemas
 const actionSchema = require('./actions-validation');
 
+// database interface
 const Actions = require('./actions-model');
 
 // BASE - /api/actions
@@ -32,12 +35,7 @@ router.get('/:id', validateActionId, async (req, res, next) => {
 // [POST] /api/actions
 router.post('/', validator(actionSchema), async (req, res, next) => {
   try {
-    const action = await Actions.insert({
-      project_id: req.body.project_id,
-      description: req.body.description,
-      notes: req.body.notes,
-      completed: req.body.completed,
-    });
+    const action = await Actions.insert(req.body);
     res.status(201).json(action);
   } catch (err) {
     next(err);
@@ -47,12 +45,7 @@ router.post('/', validator(actionSchema), async (req, res, next) => {
 // [PUT] /api/actions/:id
 router.put('/:id', [validateActionId, validator(actionSchema)], async (req, res, next) => {
   try {
-    const updatedAction = await Actions.update(req.params.id, {
-      project_id: req.body.project_id,
-      description: req.body.description,
-      notes: req.body.notes,
-      completed: req.body.completed,
-    });
+    const updatedAction = await Actions.update(req.params.id, req.body);
     res.status(201).json(updatedAction);
   } catch (err) {
     next(err);
