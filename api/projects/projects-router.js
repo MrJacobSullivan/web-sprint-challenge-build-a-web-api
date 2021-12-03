@@ -1,6 +1,9 @@
 const express = require('express');
 
-const { validateProjectId, validateProject } = require('./projects-middleware');
+const { validator } = require('../global-middleware');
+const { validateProjectId } = require('./projects-middleware');
+
+const projectSchema = require('./projects-validation');
 
 const Projects = require('./projects-model');
 
@@ -27,7 +30,7 @@ router.get('/:id', validateProjectId, async (req, res, next) => {
 });
 
 // [POST] /api/projects
-router.post('/', validateProject, async (req, res, next) => {
+router.post('/', validator(projectSchema), async (req, res, next) => {
   try {
     const project = await Projects.insert({
       name: req.body.name,
@@ -41,7 +44,7 @@ router.post('/', validateProject, async (req, res, next) => {
 });
 
 // [PUT] /api/projects/:id
-router.put('/:id', [validateProjectId, validateProject], async (req, res, next) => {
+router.put('/:id', [validateProjectId, validator(projectSchema)], async (req, res, next) => {
   try {
     const updatedProject = await Projects.update(req.params.id, {
       name: req.body.name,
