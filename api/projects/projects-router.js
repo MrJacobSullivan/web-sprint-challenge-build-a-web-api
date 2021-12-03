@@ -1,6 +1,6 @@
 const express = require('express');
 
-// const {} = require('./projects-middleware');
+const { validateProjectId } = require('./projects-middleware');
 
 const Projects = require('./projects-model');
 
@@ -18,6 +18,13 @@ router.get('/', async (req, res, next) => {
 });
 
 // [GET] /api/projects/:id
+router.get('/:id', validateProjectId, async (req, res, next) => {
+  try {
+    res.json(req.project);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // [POST] /api/projects
 
