@@ -1,6 +1,9 @@
 const express = require('express');
 
-const { validateActionId, validateAction } = require('./actions-middlware');
+const { validator } = require('../global-middleware');
+const { validateActionId } = require('./actions-middlware');
+
+const actionSchema = require('./actions-validation');
 
 const Actions = require('./actions-model');
 
@@ -27,12 +30,8 @@ router.get('/:id', validateActionId, async (req, res, next) => {
 });
 
 // [POST] /api/actions
-router.post('/', validateAction, async (req, res, next) => {
+router.post('/', validator(actionSchema), async (req, res, next) => {
   try {
-    // project_id: required
-    // description: required, up to 128 in length
-    // notes: required
-    // completed: not required, defaults to false
     const action = await Actions.insert({
       project_id: req.body.project_id,
       description: req.body.description,
@@ -46,7 +45,7 @@ router.post('/', validateAction, async (req, res, next) => {
 });
 
 // [PUT] /api/actions/:id
-router.put('/:id', [validateActionId, validateAction], async (req, res, next) => {
+router.put('/:id', [validateActionId, validator(actionSchema)], async (req, res, next) => {
   try {
     const updatedAction = await Actions.update(req.params.id, {
       project_id: req.body.project_id,
