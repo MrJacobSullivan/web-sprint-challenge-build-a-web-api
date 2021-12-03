@@ -61,5 +61,13 @@ router.put('/:id', [validateActionId, validateAction], async (req, res, next) =>
 });
 
 // [DELETE] /api/actions/:id
+router.delete('/:id', validateActionId, async (req, res, next) => {
+  try {
+    await Actions.remove(req.params.id);
+    res.end();
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;
