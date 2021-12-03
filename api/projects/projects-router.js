@@ -55,6 +55,14 @@ router.put('/:id', [validateProjectId, validateProject], async (req, res, next) 
 });
 
 // [DELETE] /api/projects/:id
+router.delete('/:id', validateProjectId, async (req, res, next) => {
+  try {
+    await Projects.remove(req.params.id);
+    res.end();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // [GET] /api/projects/:id/actions
 
